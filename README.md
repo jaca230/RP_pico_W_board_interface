@@ -11,7 +11,6 @@ The project contains the following main components:
 - **control_interface.py**: Acts as the communication interface, handling commands sent to the board and processing responses.
 - **hardware_manager.py**: Manages the hardware components, such as GPIO pins and PWM control.
 - **network_manager.py**: Handles Wi-Fi connectivity and saves connection details.
-- **deprecated/**: Contains older versions of some modules and configurations, which are now deprecated.
 
 ## Features
 
@@ -25,36 +24,12 @@ The project contains the following main components:
 
 2. Upload the files to your Raspberry Pi Pico W using a tool like **Thonny** or **rshell**.
 
-3. Configure your Wi-Fi credentials by editing the `config.json` file stored on the board or using the `ConfigManager` class to programmatically set them.
+3. Use the `main.py` script to interact with the board. This script includes functions for managing Wi-Fi connections and hardware.
 
-4. Use the `main.py` script to interact with the board. This script includes functions for managing Wi-Fi connections and hardware.
-
-## Usage
-
-This interface provides several functions for controlling hardware and connecting to a network. For example, you can use it to connect to Wi-Fi and control GPIO pins:
-
-```python
-from network_manager import NetworkManager
-from config_manager import ConfigManager
-
-# Load config from file
-config_manager = ConfigManager(config_file="config.json")
-network_manager = NetworkManager(config_manager)
-
-# Connect to Wi-Fi using the credentials in config
-network_manager.connect()
-
-# Example: Control GPIO pins (implementation depends on your hardware)
-# hardware_manager.create_gpio_pin(pin_number=15, mode="OUT")
-```
 
 ## Running the Script
-
 To run the script on the Raspberry Pi Pico W, simply upload the code and execute the `main.py` file. You can use Thonny or any MicroPython-compatible IDE to do this.
 
-## Contributing
-
-Feel free to fork the repository and submit pull requests if you want to contribute to the project. Please make sure to follow the coding conventions and provide detailed explanations for your changes.
 
 ## License
 
