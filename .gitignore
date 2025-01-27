@@ -1,0 +1,41 @@
+# Ignore the deprecated folder
+deprecated/
+
+#Ignore Python bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore environment files
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore test output and coverage files
+*.coveragerc
+*.tox/
+*.nox/
+*.coverage
+*.hypothesis/
+
+# Ignore build and distribution directories
+build/
+dist/
+*.egg-info/
+
+# Ignore log files
+*.log
+
