@@ -1,0 +1,3 @@
+[submodule "remote_controller"]
+	path = remote_controller
+	url = https://github.com/jaca230/RP_pico_W_board_remote_controller
