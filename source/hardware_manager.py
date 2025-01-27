@@ -1,5 +1,5 @@
 import ujson as json
-from hardware import GPIOHardware, PWMHardware
+from source.hardware import GPIOHardware, PWMHardware
 from machine import unique_id
 
 class HardwareManager:

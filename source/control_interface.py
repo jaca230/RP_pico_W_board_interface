@@ -1,5 +1,5 @@
 import sys
-from hardware import GPIOHardware, PWMHardware
+from source.hardware import GPIOHardware, PWMHardware
 
 class ControlInterface:
     def __init__(self, hardware_manager, config_manager, network_manager):
@@ -7,8 +7,9 @@ class ControlInterface:
         self.hardware_manager = hardware_manager
         self.config_manager = config_manager
         self.network_manager = network_manager  # Store the network manager instance
+        self.webserver = None  # Initialize webserver as None
         self.commands = {
-            'apply_settings': self._apply_settings,
+            'apply_hardware_settings': self._apply_hardware_settings,
             'stop': self._stop,
             'create': self._create,
             'start': self._start,
@@ -23,9 +24,12 @@ class ControlInterface:
             'delete_config_key': self._delete_config_key,
             'set_wifi_credentials': self._set_wifi_credentials,
             'connect_wifi': self._connect_wifi,
+            'start_webserver': self._start_webserver,  # New command to start webserver
+            'stop_webserver': self._stop_webserver,    # New command to stop webserver
+            'apply_webserver_settings': self._apply_webserver_settings  # New command to apply webserver settings
         }
         self.command_params = {
-            'apply_settings': ['hardware_id', 'settings'],
+            'apply_hardware_settings': ['hardware_id', 'settings'],
             'stop': ['hardware_id'],
             'create': ['settings'],
             'start': ['hardware_id'],
@@ -40,7 +44,15 @@ class ControlInterface:
             'delete_config_key': ['config_key'],
             'set_wifi_credentials': ['ssid', 'password'],
             'connect_wifi': [],
+            'start_webserver': [],  # No arguments needed for this command
+            'stop_webserver': [],   # No arguments needed for this command
+            'apply_webserver_settings': ['settings']  # Takes settings as arguments
         }
+
+    def set_webserver(self, webserver):
+        """Set the webserver instance."""
+        self.webserver = webserver
+        print("Webserver has been set.")
 
     def _list_commands(self):
         """Return a list of available commands and their parameters."""
@@ -59,7 +71,7 @@ class ControlInterface:
     def send_response(self, response):
         sys.stdout.write(f"\nRESPONSE: [==>{response}<==] \n\r")
 
-    def _apply_settings(self, hardware_id, settings):
+    def _apply_hardware_settings(self, hardware_id, settings):
         """Apply the settings to the specified hardware."""
         hardware = self.hardware_manager.get_hardware(hardware_id)
         if hardware:
@@ -151,12 +163,12 @@ class ControlInterface:
         else:
             return f"Error: Config key '{config_key}' not found."
 
-    def _set_wifi_credentials(self, username, password):
+    def _set_wifi_credentials(self, ssid, password):
         """Set the credentials in the NetworkManager and config manager."""
-        self.network_manager.set_credentials(username, password)  # Update credentials in NetworkManager
-        self.config_manager.set('wifi.ssid', username)  # Store username in config
+        self.network_manager.set_credentials(ssid, password)  # Update credentials in NetworkManager
+        self.config_manager.set('wifi.ssid', ssid)  # Store ssid in config
         self.config_manager.set('wifi.password', password)  # Store password in config
-        return f"Credentials set for username: {username}"
+        return f"Credentials set for SSID: {ssid}"
 
     def _connect_wifi(self):
         """Attempt to connect using the current credentials."""
@@ -169,5 +181,39 @@ class ControlInterface:
             # Return the MAC address if the connection fails
             mac_address = self.network_manager.network_interface.config('mac')
             return f"Connection failed. MAC Address: {mac_address}"
+        
 
+    def _start_webserver(self):
+        """Start the webserver."""
+        if self.webserver:
+            # Send the response before starting the webserver
+            self.send_response("Webserver starting at IP: http://" + self.network_manager.network_interface.ifconfig()[0] + ":" + str(self.webserver.port))
+            
+            # Send delimiter (assuming '>>>') to signal the end of the message
+            # This "tricks" the serial controller into thinking the response is complete
+            sys.stdout.write(f"\n >>> \n\r")
+
+            # Now start the webserver
+            self.webserver.start()
+        else:
+            self.send_response("Webserver not set. Please set the webserver instance.")
+        
+    def _stop_webserver(self):
+        """Stop the webserver."""
+        if self.webserver:
+            webserver_stopped = self.webserver.stop()
+            if webserver_stopped:
+                return f"Webserver running at http://{self.webserver.ip}:{self.webserver.port} stopped."
+            else:
+                return "Error: Webserver not running."
+        else:
+            return "Error: Webserver not set."
+
+    def _apply_webserver_settings(self, settings):
+        """Apply webserver settings."""
+        if self.webserver:
+            self.webserver.apply_settings(settings)
+            return f"Webserver settings applied: {settings}"
+        else:
+            return "Error: Webserver not set."
 
