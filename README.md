@@ -22,9 +22,9 @@ The project contains the following main components:
 
 1. Clone or copy this repository to your local machine or Raspberry Pi Pico W.
 
-2. Upload the files to your Raspberry Pi Pico W using a tool like **Thonny** or **rshell**.
+2. Upload the files to your Raspberry Pi Pico W using a tool like **Thonny**, **rshell**, or **Visual Studio Code**.
 
-3. Use the `main.py` script to interact with the board. This script includes functions for managing Wi-Fi connections and hardware.
+3. Use the [remote controller](https://github.com/jaca230/RP_pico_W_board_remote_controller) to interact with the board
 
 
 ## Running the Script
