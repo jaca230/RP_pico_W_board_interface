@@ -125,11 +125,11 @@ class PWMHardware(Hardware):
     def start(self):
         """Start the PWM component and initialize its settings."""
         self.component = PWM(Pin(self.pin_number))
-        self.apply_settings({
-            "frequency": self.frequency,
-            "duty_cycle": self.duty_cycle,
-            "pulse_width_ns": self.pulse_width_ns,
-        })
+        self.component.freq(self.frequency)
+        if (self.duty_cycle is not None):
+            self.component.duty_u16(int(self.duty_cycle * 65535))
+        else:
+            self.component.duty_ns(self.pulse_width_ns)
 
     def stop(self):
         """Stop the PWM component."""
