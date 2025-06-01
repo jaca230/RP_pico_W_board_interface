@@ -24,6 +24,7 @@ class HardwareManager:
         for key, value in settings.items():
             if hasattr(hardware, key):
                 setattr(hardware, key, value)
+        hardware.update_config()
 
         # Store hardware in map with hardware ID as the key
         self.hardware_map[hardware_id] = hardware
